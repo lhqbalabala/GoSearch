@@ -1,0 +1,62 @@
+syntax = "proto3";
+package models;
+
+option go_package = "../../models";
+
+//高亮
+message Highlight{
+  string preTag=1;
+  string postTag=2;
+}
+message Docs{
+  uint32 favid=1;
+  uint32 docid=2;
+}
+//搜索请求
+message SearchRequest{
+  string query=1;
+  uint32 page=2;
+  uint32 limit=3;
+  repeated string filterWord=4;
+  Highlight highlight=5;
+  map<uint32, Docs> likes = 6; // 用户收藏
+}
+
+//搜索结果
+message SearchResult{
+  float time=1;//查询用时
+  uint32 total=2;//总数
+  uint32 pageCount=3;//总页数
+  uint32 page=4;//页码
+  uint32 limit=5;//页大小
+  repeated ResponseDoc documents=6;//文档
+  repeated string related=7;//相关搜索
+  repeated string words=8;//搜索关键词
+}
+message IndexDoc{
+  uint32 id=1;
+  string text=2;
+  string url=3;
+}
+message ResponseDoc{
+  uint32 id=1;
+  string text=2;
+  string url=3;
+  float score=4;//得分
+  bool islike=5;//是否被收藏
+  uint32 docsid=6;//收藏id
+  uint32 favid=7;//收藏夹id
+}
+message DocRequest{
+  uint32 id=1;
+}
+message DocResult{
+  string url=1;
+  string text=2;
+}
+service Search{
+  rpc GetSearchResult(SearchRequest) returns (SearchResult);
+  rpc GetDocById(DocRequest)returns (DocResult);
+}
+
+
