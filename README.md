@@ -13,6 +13,7 @@
 + ResNet50
 + diskcache
 + milvus
++ protobuf序列化
 + redis哨兵模式
 + redis分片集群
 + sentinel-go
