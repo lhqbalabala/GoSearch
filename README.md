@@ -29,4 +29,7 @@
 
 ## 在线体验
 在 2023年之前可以通过 [这里](http://121.196.207.80:8080) 在线体验本项目
-[服务部署.pdf](https://github.com/lhqbalabala/GoSearch/files/9349444/default.pdf)
+
+## 本项目服务部署示例图
+![服务部署](https://user-images.githubusercontent.com/71314983/184846392-482324c3-c09c-4e93-8cb1-a228ee582143.jpg)
+
