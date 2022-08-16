@@ -13,13 +13,15 @@
 + ResNet50
 + diskcache
 + milvus
-+ redis哨兵模式+分片集群
++ redis哨兵模式
++ redis分片集群
 + sentinel-go
 + etcd注册中心
 + go-micro
 + 一致性hash
 + apinto网关
-+ zookeeper搭建kafka集群
++ zookeeper
++ kafka集群
 
 ## 该项目的单机架构及单机详细文档
 点击 [这里](https://github.com/lgdSearch/lgdSearch) 跳转
