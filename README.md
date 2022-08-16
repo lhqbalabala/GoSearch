@@ -37,3 +37,20 @@
 
 ![搜索请求](https://user-images.githubusercontent.com/71314983/184942343-bd8950a7-a70c-47cb-9064-2da5f11bd022.jpg)
 
+
+## 模块功能
+
+UserApi：用户登录、注册、收藏夹等接口实现，并操作MySQL数据库
+
+SearchApi：搜索功能的接口实现
+
+SearchRPC：搜索功能的方法实现
+
+HotSearchApi：热搜的接口实现
+
+HotSearchRPC：热搜的方法实现
+
+RelatedSearchApi：相关搜索的接口实现
+
+RelatedSearchRPC：相关搜索的方法实现
+
