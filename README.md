@@ -29,3 +29,4 @@
 
 ## 在线体验
 在 2023年之前可以通过 [这里](http://121.196.207.80:8080) 在线体验本项目
+[服务部署.pdf](https://github.com/lhqbalabala/GoSearch/files/9349444/default.pdf)
