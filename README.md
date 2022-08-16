@@ -22,7 +22,7 @@
 + zookeeper搭建kafka集群
 
 ## 该项目的单机架构及单机详细文档
-点击[这里](https://github.com/lgdSearch/lgdSearch) 查看
+点击 [这里](https://github.com/lgdSearch/lgdSearch) 跳转
 
 ## 在线体验
 在 2023年之前可以通过 [这里](http://121.196.207.80:8080) 在线体验本项目
