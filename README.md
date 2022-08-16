@@ -33,7 +33,7 @@
 ## 本项目服务部署示例图
 ![服务部署](https://user-images.githubusercontent.com/71314983/184846392-482324c3-c09c-4e93-8cb1-a228ee582143.jpg)
 
-## 执行一次搜索的
+## 执行一次搜索的示例图
 
 ![搜索请求](https://user-images.githubusercontent.com/71314983/184942343-bd8950a7-a70c-47cb-9064-2da5f11bd022.jpg)
-示例图
+
