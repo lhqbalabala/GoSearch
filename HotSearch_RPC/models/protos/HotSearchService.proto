@@ -1,0 +1,31 @@
+syntax = "proto3";
+package models;
+
+option go_package = "../../models";
+
+message HotSearchRequest{
+    int32 size = 1;
+}
+
+// 热搜
+message HotSearchModel{
+    string text=1;
+    int32 num=2;
+}
+
+message HotSearchListResponse{
+    repeated HotSearchModel data = 1;
+}
+
+service HotSearch{
+    rpc GetHotSearchList(HotSearchRequest) returns (HotSearchListResponse);
+    rpc InsertQuery(InsertQueryRequest) returns(InsertQueryRespense);
+}
+
+//插入搜索
+message InsertQueryRequest{
+    string query=1;
+}
+message InsertQueryRespense{
+
+}

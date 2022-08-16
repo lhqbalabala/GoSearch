@@ -1,0 +1,17 @@
+syntax = "proto3";
+package models;
+
+option go_package = "../../models";
+
+message RelatedSearchRequest{
+  string query = 1;
+}
+message RelatedSearchResponse{
+  repeated string related=1;
+}
+
+service RelatedSearch{
+  rpc GetRelatedSearch(RelatedSearchRequest) returns (RelatedSearchResponse);
+}
+
+
