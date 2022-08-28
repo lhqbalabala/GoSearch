@@ -2,6 +2,7 @@ package pkg
 
 import (
 	"Search_RPC/models"
+	"Search_RPC/pkg/bitmap"
 	"Search_RPC/pkg/db/badgerStorage"
 	"Search_RPC/pkg/db/boltStorage"
 	"Search_RPC/pkg/kafka"
@@ -92,6 +93,9 @@ type Engine struct {
 
 	//是否调试模式
 	IsDebug bool
+
+	//分词过滤
+	Bitmap *bitmap.Bitmap
 
 	// 版本
 	Version int
@@ -184,7 +188,8 @@ func (e *Engine) Init() {
 	if e.Option == nil {
 		e.Option = e.GetOptions()
 	}
-
+	bitmap.InitBitmap("pkg/data/keys.txt")
+	e.Bitmap = bitmap.GetBitmap()
 	//初始化kafka
 	e.SearchResultMQ = kafka.NewProducer("120.48.100.204:9092,43.142.141.48:9092,121.196.207.80:9092", "SearchResult", time.Second*5, kafka.Async)
 	e.SearchRequestMQ = kafka.NewProducer("120.48.100.204:9092,43.142.141.48:9092,121.196.207.80:9092", "SearchRequest", time.Second*5, kafka.Async)
@@ -366,8 +371,10 @@ func (e *Engine) WordCut(text string) []string {
 
 	index := 0
 	for word := range wordMap {
-		wordsSlice[index] = word
-		index += 1
+		if e.Bitmap.Has(int(utils.StringToInt(word))) {
+			wordsSlice[index] = word
+			index += 1
+		}
 	}
 
 	return wordsSlice
@@ -480,11 +487,13 @@ func (e *Engine) MultiSearch(request *models.SearchRequest) *models.SearchResult
 	isfound := redis.Isfound(ks)
 	if isfound {
 		logger.Logger.Infoln("该结果集从boltdb取出")
+		//过滤
+		trie.BuildTree(request.FilterWord)
+
+		// 设置fail指针
+		trie.SetNodeFailPoint()
 		// 处理分页
-		request.Highlight = &models.Highlight{
-			PreTag:  "<span style=\"color: red;\">",
-			PostTag: "</span>",
-		}
+		GetAndSetDefault(request)
 		//分词搜索
 		words = e.WordCut(request.Query)
 		if e.IsDebug {
@@ -508,6 +517,7 @@ func (e *Engine) MultiSearch(request *models.SearchRequest) *models.SearchResult
 			resultIds = append(resultIds, pagination.DocItem{resultslice[index].Id, resultslice[index].Score, 1})
 		}
 		result.Total = uint32(slowresultlen)
+
 	} else {
 		logger.Logger.Infoln("该结果集为正常搜索")
 		//分词搜索
@@ -579,10 +589,7 @@ func (e *Engine) MultiSearch(request *models.SearchRequest) *models.SearchResult
 			e.SlowResultStorages.Set(utils.Encoder(ks), bufs)
 		}
 		// 处理分页
-		request.Highlight = &models.Highlight{
-			PreTag:  "<span style=\"color: red;\">",
-			PostTag: "</span>",
-		}
+		GetAndSetDefault(request)
 		//读取文档
 		result = &models.SearchResult{
 			Total:     uint32(fastSort.Count()),
@@ -615,7 +622,7 @@ func (e *Engine) MultiSearch(request *models.SearchRequest) *models.SearchResult
 
 			var wg sync.WaitGroup
 			wg.Add(len(items))
-
+			fmt.Println("lenitems:", len(items))
 			//只读取前面 limit 个
 			_tt := time.Now()
 			for index, item := range items {
@@ -633,7 +640,6 @@ func (e *Engine) MultiSearch(request *models.SearchRequest) *models.SearchResult
 					storageDoc := new(doc.StorageIndexDoc)
 					if buf != nil {
 						storageDoc.UnmarshalBinary(buf)
-
 						// 查找 ACTrie, 如果有过滤词, 过滤掉
 						if request.FilterWord != nil &&
 							len(request.FilterWord) > 0 &&
@@ -732,6 +738,11 @@ func (e *Engine) MultiSearchPicture(request *models.SearchRequest) *models.Searc
 	isfound := redis.Isfound(ks)
 	if isfound {
 		logger.Logger.Infoln("该结果集从boltdb取出")
+		//过滤
+		trie.BuildTree(request.FilterWord)
+
+		// 设置fail指针
+		trie.SetNodeFailPoint()
 		// 处理分页
 		GetAndSetDefault(request)
 		words = e.WordCut(request.Query)
@@ -1031,7 +1042,7 @@ func (e *Engine) GetPictureUrl(url string, id uint32, thumbnailUrl *string, call
 		ok = e.putInOSS(url, id)
 	}
 	if ok {
-		*thumbnailUrl = fmt.Sprintf("/example/%d.jpg", id)
+		*thumbnailUrl = fmt.Sprintf("%d.jpg", id)
 	} else {
 		*thumbnailUrl = url
 	}
