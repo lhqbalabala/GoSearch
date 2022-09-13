@@ -8,7 +8,6 @@
 
 + Trie树
 + AC自动机
-+ 快速排序法
 + 倒排索引
 + 文件分片
 + golang-jieba分词
@@ -20,7 +19,6 @@
 + diskcache
 + milvus
 + protobuf序列化
-+ redis哨兵模式
 + redis分片集群
 + sentinel-go
 + etcd注册中心
